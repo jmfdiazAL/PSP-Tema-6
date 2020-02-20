@@ -1,0 +1,90 @@
+3.3.  Firmando ficheros Jar
+
+ramon@AMD ~/ejemplo/DAM $ javac GetProps.java 
+
+
+ramon@AMD ~/ejemplo/DAM $ jar cvf GetProps.jar GetProps.class 
+manifiesto agregado
+agregando: GetProps.class(entrada = 1418) (salida = 752)(desinflado 46%)
+
+
+ramon@AMD ~/ejemplo/DAM $ keytool -genkey -alias firma -keypass Almeria25 -keystore DAM -storepass semipresencial
+¿Cuáles son su nombre y su apellido?
+  [Unknown]:  Ramón José Martínez Cuevas                
+¿Cuál es el nombre de su unidad de organización?
+  [Unknown]:  IES_Al_Andalus
+¿Cuál es el nombre de su organización?
+  [Unknown]:  PSP
+¿Cuál es el nombre de su ciudad o localidad?
+  [Unknown]:  Almería
+¿Cuál es el nombre de su estado o provincia?
+  [Unknown]:  Almería
+¿Cuál es el código de país de dos letras de la unidad?
+  [Unknown]:  SP
+¿Es correcto CN=Ramón José Martínez Cuevas, OU=IES_Al_Andalus, O=PSP, L=Almería, ST=Almería, C=SP?
+  [no]:  si
+
+
+ramon@AMD ~/ejemplo/DAM $ jarsigner -keystore DAM -signedjar sGetProps.jar GetProps.jar firma
+Enter Passphrase for keystore: 
+Enter key password for firma: 
+jar signed.
+
+Warning: 
+The signer certificate will expire within six months.
+No -tsa or -tsacert is provided and this jar is not timestamped. Without a timestamp, users may not be able to validate this jar after the signer certificate's expiration date (2016-06-20) or after any future revocation date.
+
+
+ramon@AMD ~/ejemplo/DAM $ keytool -export -keystore DAM -alias firma -file Ramon.cert
+Introduzca la contraseña del almacén de claves:  
+Certificado almacenado en el archivo <Ramon.cert>
+
+
+----------------------------------------------------
+
+3.4.  Utilizando ficheros Jar firmados
+
+
+ramon@AMD ~/ejemplo/DAM $ java -cp sGetProps.jar GetProps 
+About to get os.name property value
+  The name of your operating system is: Linux
+About to get java.version property value
+  The version of the JVM you are running is: 1.7.0_95
+About to get user.home property value
+  Your user home directory is: /home/ramon
+About to get java.home property value
+  Your JRE installation directory is: /usr/lib/jvm/java-7-openjdk-amd64/jre
+
+
+ramon@AMD ~/ejemplo/DAM $ java -Djava.security.manager -cp sGetProps.jar GetProps
+About to get os.name property value
+  The name of your operating system is: Linux
+About to get java.version property value
+  The version of the JVM you are running is: 1.7.0_95
+About to get user.home property value
+Caught exception java.security.AccessControlException: access denied ("java.util.PropertyPermission" "user.home" "read")
+
+
+ramon@AMD ~/ejemplo/DAM $ keytool -import -alias Ramon -file Ramon.cert -keystore DAM
+Introduzca la contraseña del almacén de claves:  
+El certificado ya existe en el almacén de claves con el alias <firma>
+¿Aún desea agregarlo? [no]:  si
+Se ha agregado el certificado al almacén de claves
+
+ramon@AMD ~/ejemplo/DAM $ java -Djava.security.manager -cp sGetProps.jar GetProps
+About to get os.name property value
+  The name of your operating system is: Linux
+About to get java.version property value
+  The version of the JVM you are running is: 1.7.0_95
+About to get user.home property value
+  Your user home directory is: /home/ramon
+About to get java.home property value
+  Your JRE installation directory is: /usr/lib/jvm/java-7-openjdk-amd64/jre
+
+
+
+
+
+
+
+

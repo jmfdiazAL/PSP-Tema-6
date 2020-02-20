@@ -1,0 +1,8 @@
+El directorio a usar es importante que sea uno sencillo:
+
+- En Windows: c:\ejemplo
+- En Linux: /home/ramon/ejemplo
+
+Por lo que deberas copiar todos estos archivos y situarlos en ese directorio.
+
+
