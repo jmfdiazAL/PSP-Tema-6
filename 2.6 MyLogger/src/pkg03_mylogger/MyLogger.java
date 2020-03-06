@@ -26,7 +26,7 @@ public class MyLogger {
             // fh = new FileHandler("c:\\MyLogFile.log", true);
             
             // Para Linux
-            fh = new FileHandler("/home/ramon/MyLogFile.log", true);
+            fh = new FileHandler("C:\\Users\\jmfdiaz\\MyLogFile.log", true);
 
             logger.addHandler(fh);
             logger.setLevel(Level.ALL);
